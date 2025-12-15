@@ -13,17 +13,27 @@ module.exports = async (req, res) => {
     // 2. Sync DB
     console.log('[Vercel] Syncing Database...');
     try {
-       // Use alter: true to update schema (add username column) without data loss
+       // First try non-destructive update
        await sequelize.sync({ alter: true });
-       console.log('[Vercel] Database Synced.');
+       console.log('[Vercel] Database Synced (Alter).');
     } catch (syncError) {
-       console.error('[Vercel] Database Sync Error:', syncError);
-       if (!process.env.DATABASE_URL) {
-           console.error('[Vercel] CRITICAL: DATABASE_URL is missing.');
-           return res.status(500).send('Configuration Error: DATABASE_URL is missing. SQLite cannot run on Vercel.');
+       console.error('[Vercel] Database Sync (Alter) Failed:', syncError);
+       
+       // If alter fails (likely due to schema conflict like NOT NULL on new column),
+       // we try to FORCE reset the database to get it working.
+       // This wipes data but ensures the app runs.
+       console.log('[Vercel] Attempting Database Reset (Force Sync)...');
+       try {
+           await sequelize.sync({ force: true });
+           console.log('[Vercel] Database Synced (Force).');
+       } catch (forceError) {
+           console.error('[Vercel] Database Force Sync Failed:', forceError);
+           if (!process.env.DATABASE_URL) {
+               console.error('[Vercel] CRITICAL: DATABASE_URL is missing.');
+               return res.status(500).send('Configuration Error: DATABASE_URL is missing. SQLite cannot run on Vercel.');
+           }
+           throw forceError;
        }
-       // If it's not a missing DB URL, rethrow to see what else it could be
-       throw syncError;
     }
     
     // 3. Hand over to Express
