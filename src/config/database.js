@@ -31,9 +31,16 @@ if (process.env.DATABASE_URL) {
 
   // Fallback to SQLite for local development
   console.log('Initializing Sequelize with SQLite...');
+  
+  // On Vercel, if we reach here, it means DATABASE_URL is missing.
+  // We MUST NOT try to use a file-based SQLite because of read-only FS.
+  // We'll use in-memory SQLite just to prevent the app from crashing during module load,
+  // so that api/index.js can catch the missing env var error and report it.
+  const storage = isProduction ? ':memory:' : path.join(__dirname, '../../database.sqlite');
+  
   sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: path.join(__dirname, '../../database.sqlite'),
+    storage: storage,
     logging: false
   });
 }

@@ -27,6 +27,12 @@ app.use('/auth', authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/raw', rawRoutes);
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('[Express] Unhandled Error:', err);
+  res.status(500).send('Internal Server Error (Express)');
+});
+
 // Export app for Vercel
 module.exports = app;
 

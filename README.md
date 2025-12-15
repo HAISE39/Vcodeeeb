@@ -162,6 +162,8 @@ Karena Vercel menggunakan arsitektur serverless (read-only filesystem), Anda **W
 4. Deploy project.
 
 **Troubleshooting:**
+See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed help with Vercel deployment issues.
+
 - Jika muncul "Internal Server Error" atau crash: Cek Logs di dashboard Vercel (bukan Build Logs).
 - Pastikan `DATABASE_URL` sudah benar.
 - Pastikan variable Environment sudah ditambahkan SEBELUM deploy (atau redeploy setelah menambahkannya).
