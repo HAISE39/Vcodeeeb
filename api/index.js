@@ -13,7 +13,8 @@ module.exports = async (req, res) => {
     // 2. Sync DB
     console.log('[Vercel] Syncing Database...');
     try {
-       await sequelize.sync();
+       // Use alter: true to update schema (add username column) without data loss
+       await sequelize.sync({ alter: true });
        console.log('[Vercel] Database Synced.');
     } catch (syncError) {
        console.error('[Vercel] Database Sync Error:', syncError);
