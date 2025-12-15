@@ -8,6 +8,8 @@ const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL
 if (process.env.DATABASE_URL) {
   // Use PostgreSQL if DATABASE_URL is defined (e.g. Vercel, Heroku, Supabase)
   console.log('Initializing Sequelize with PostgreSQL...');
+  // Force load pg to ensure it's available in the bundle
+  require('pg'); 
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
