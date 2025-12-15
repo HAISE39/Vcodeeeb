@@ -3,6 +3,7 @@ const router = express.Router();
 const { Script, ScriptVersion, User } = require('../models');
 const { authenticate, isAdmin } = require('../middleware/auth');
 const { generateLoader } = require('../utils/loaderGenerator');
+const { v4: uuidv4 } = require('uuid');
 
 router.use(authenticate);
 
@@ -27,9 +28,17 @@ router.get('/create', (req, res) => {
 
 // Create Script Action
 router.post('/create', async (req, res) => {
-  const { name, description, content } = req.body;
   try {
+      console.log('[Dashboard] Create Script Request:', req.body);
+      const { name, description, content } = req.body;
+      
+      if (!name || !content) {
+          return res.status(400).send('Name and Content are required');
+      }
+
       const script = await Script.create({
+          uuid: uuidv4(),
+          secretKey: uuidv4(),
           name,
           description,
           createdBy: req.user.id
@@ -43,8 +52,8 @@ router.post('/create', async (req, res) => {
       
       res.redirect(303, '/dashboard');
   } catch (error) {
-      console.error(error);
-      res.status(500).send('Error creating script');
+      console.error('[Dashboard] Create Error:', error);
+      res.status(500).send('Error creating script: ' + error.message);
   }
 });
 

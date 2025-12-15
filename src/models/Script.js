@@ -9,12 +9,10 @@ const Script = sequelize.define('Script', {
   },
   uuid: {
     type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
     unique: true
   },
   secretKey: {
     type: DataTypes.STRING,
-    defaultValue: DataTypes.UUIDV4
   },
   name: {
     type: DataTypes.STRING,
