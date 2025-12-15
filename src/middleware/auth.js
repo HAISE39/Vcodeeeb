@@ -6,7 +6,7 @@ const authenticate = (req, res, next) => {
   const token = req.cookies.token;
   
   if (!token) {
-    return res.redirect('/auth/login');
+    return res.redirect(303, '/auth/login');
   }
 
   try {
@@ -15,7 +15,7 @@ const authenticate = (req, res, next) => {
     next();
   } catch (err) {
     res.clearCookie('token');
-    return res.redirect('/auth/login');
+    return res.redirect(303, '/auth/login');
   }
 };
 

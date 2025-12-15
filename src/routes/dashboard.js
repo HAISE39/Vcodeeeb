@@ -6,6 +6,11 @@ const { generateLoader } = require('../utils/loaderGenerator');
 
 router.use(authenticate);
 
+// Handle accidental POST to /dashboard by redirecting to GET
+router.post('/', (req, res) => {
+    res.redirect(303, '/dashboard');
+});
+
 // List Scripts
 router.get('/', async (req, res) => {
   const scripts = await Script.findAll({ 
@@ -36,7 +41,7 @@ router.post('/create', async (req, res) => {
           version: 1
       });
       
-      res.redirect('/dashboard');
+      res.redirect(303, '/dashboard');
   } catch (error) {
       console.error(error);
       res.status(500).send('Error creating script');
@@ -90,7 +95,7 @@ router.post('/edit/:id', async (req, res) => {
         });
     }
 
-    res.redirect('/dashboard');
+    res.redirect(303, '/dashboard');
 });
 
 // Delete Script
@@ -100,7 +105,7 @@ router.post('/delete/:id', async (req, res) => {
     if (req.user.role !== 'admin' && script.createdBy !== req.user.id) return res.status(403).send('Unauthorized');
     
     await script.destroy();
-    res.redirect('/dashboard');
+    res.redirect(303, '/dashboard');
 });
 
 module.exports = router;

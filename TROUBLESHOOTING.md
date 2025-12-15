@@ -38,3 +38,8 @@ If the logs say `Initializing Sequelize with SQLite...`, then the app failed to 
 If the logs show `[Vercel] Authenticating Database...` but never `[Vercel] Database Authenticated.`, the connection is timing out.
 - Check if your Database allows connections from external IPs (0.0.0.0/0).
 - Check if "SSL" is required (the code currently forces SSL).
+
+## 5. "Cannot POST /dashboard"
+**Cause:** Browser is trying to submit data to the wrong URL or preserving POST method after redirect.
+**Fix:** I have updated the code to use HTTP 303 redirects, which force the browser to switch to GET. This should resolve the issue automatically. If it persists, try clearing your browser cache.
+

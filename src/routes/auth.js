@@ -19,7 +19,8 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
     res.cookie('token', token, { httpOnly: true });
-    res.redirect('/dashboard');
+    // Use 303 See Other to force GET method after POST
+    res.redirect(303, '/dashboard');
   } catch (error) {
     res.render('login', { error: 'An error occurred' });
   }
@@ -38,7 +39,7 @@ router.post('/register', async (req, res) => {
         const role = count === 0 ? 'admin' : 'user';
         
         await User.create({ email, password: hashedPassword, role });
-        res.redirect('/auth/login');
+        res.redirect(303, '/auth/login');
     } catch (error) {
         res.render('register', { error: 'Email already exists' });
     }
