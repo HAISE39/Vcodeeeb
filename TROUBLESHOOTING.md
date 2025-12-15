@@ -43,3 +43,10 @@ If the logs show `[Vercel] Authenticating Database...` but never `[Vercel] Datab
 **Cause:** Browser is trying to submit data to the wrong URL or preserving POST method after redirect.
 **Fix:** I have updated the code to use HTTP 303 redirects, which force the browser to switch to GET. This should resolve the issue automatically. If it persists, try clearing your browser cache.
 
+## 6. Raw Endpoint Redirects / Doesn't Show Content
+**Cause:** The `/raw/:uuid` endpoint is **protected**.
+- If you open it in a browser, it will redirect you to Google (Anti-Browser protection). This is intentional.
+- If you want to verify the script content, verify it in the **Dashboard**.
+- If the Loader fails to load, ensure you are using the **Latest Loader** code from the dashboard.
+- If you see "Script Error: Missing Secret Key", the script was corrupted during creation (likely before the recent fix). **Please delete and recreate the script.**
+

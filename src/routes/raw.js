@@ -10,14 +10,17 @@ router.get('/:uuid', async (req, res) => {
 
         // 1. Check if script exists and is active
         if (!script || !script.isActive) {
-            // Fake 404 behavior or redirect
             return res.redirect('https://google.com');
+        }
+
+        if (!script.secretKey) {
+            // Script is corrupted (missing key)
+            return res.status(500).send('Script Error: Missing Secret Key');
         }
 
         // 2. Validate Headers (Anti-Browser / Anti-Leech)
         const ggKey = req.headers['x-gg-key'];
-        // const userAgent = req.headers['user-agent'];
-
+        
         // Strict Check: Key must match script's secret key
         if (ggKey !== script.secretKey) {
             // Log attempt?
@@ -50,8 +53,8 @@ router.get('/:uuid', async (req, res) => {
         res.send(encrypted);
 
     } catch (error) {
-        console.error(error);
-        res.redirect('https://google.com');
+        console.error('[Raw Endpoint Error]', error);
+        res.status(500).send('Internal Server Error: ' + error.message);
     }
 });
 
