@@ -16,8 +16,8 @@
                         <% } %>
                         <form action="/auth/register" method="POST">
                             <div class="mb-3">
-                                <label>Email</label>
-                                <input type="email" name="email" class="form-control" required>
+                                <label>Username</label>
+                                <input type="text" name="username" class="form-control" required pattern="[a-zA-Z0-9_]+" title="Only letters, numbers, and underscores allowed">
                             </div>
                             <div class="mb-3">
                                 <label>Password</label>

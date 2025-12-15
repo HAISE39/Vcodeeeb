@@ -10,9 +10,9 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { username } });
     if (!user || !await bcrypt.compare(password, user.password)) {
       return res.render('login', { error: 'Invalid credentials' });
     }
@@ -31,17 +31,17 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         // First user is admin
         const count = await User.count();
         const role = count === 0 ? 'admin' : 'user';
         
-        await User.create({ email, password: hashedPassword, role });
+        await User.create({ username, password: hashedPassword, role });
         res.redirect(303, '/auth/login');
     } catch (error) {
-        res.render('register', { error: 'Email already exists' });
+        res.render('register', { error: 'Username already exists' });
     }
 });
 

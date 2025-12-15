@@ -16,7 +16,7 @@ router.post('/', (req, res) => {
 router.get('/', async (req, res) => {
   const scripts = await Script.findAll({ 
       where: req.user.role === 'admin' ? {} : { createdBy: req.user.id },
-      include: [{ model: User, attributes: ['email'] }]
+      include: [{ model: User, attributes: ['username'] }]
   });
   res.render('dashboard/index', { scripts, user: req.user });
 });
@@ -60,7 +60,7 @@ router.post('/create', async (req, res) => {
 // Edit Script Page
 router.get('/edit/:id', async (req, res) => {
     const script = await Script.findByPk(req.params.id, {
-        include: [ScriptVersion]
+        include: [ScriptVersion, User]
     });
     
     if (!script) return res.status(404).send('Not Found');
@@ -74,7 +74,7 @@ router.get('/edit/:id', async (req, res) => {
 
     // Generate Loader Code
     const domain = `${req.protocol}://${req.get('host')}`;
-    const loaderCode = generateLoader(domain, script.uuid, script.secretKey);
+    const loaderCode = generateLoader(domain, script.User.username, script.name, script.secretKey);
 
     res.render('dashboard/edit', { script, content: latestVersion ? latestVersion.content : '', loaderCode, user: req.user });
 });

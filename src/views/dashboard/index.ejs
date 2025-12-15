@@ -9,7 +9,7 @@
         <div class="container">
             <a class="navbar-brand" href="#">SecureScript</a>
             <div class="d-flex">
-                <span class="navbar-text me-3"><%= user.email %> (<%= user.role %>)</span>
+                <span class="navbar-text me-3"><%= user.username %> (<%= user.role %>)</span>
                 <a href="/auth/logout" class="btn btn-outline-light btn-sm">Logout</a>
             </div>
         </div>
@@ -41,7 +41,7 @@
                                     <%= script.isActive ? 'Active' : 'Disabled' %>
                                 </span>
                             </td>
-                            <td><%= script.User.email %></td>
+                            <td><%= script.User.username %></td>
                             <td><%= new Date(script.createdAt).toLocaleDateString() %></td>
                             <td>
                                 <a href="/dashboard/edit/<%= script.id %>" class="btn btn-sm btn-info">Manage</a>

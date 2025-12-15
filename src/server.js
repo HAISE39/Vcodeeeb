@@ -7,6 +7,7 @@ const { sequelize } = require('./models');
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const rawRoutes = require('./routes/raw');
+const publicRoutes = require('./routes/public');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +33,7 @@ app.get('/', (req, res) => res.redirect('/dashboard'));
 app.use('/auth', authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/raw', rawRoutes);
+app.use('/', publicRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {
