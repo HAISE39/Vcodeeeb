@@ -10,12 +10,14 @@ router.get('/:uuid', async (req, res) => {
 
         // 1. Check if script exists and is active
         if (!script || !script.isActive) {
-            return res.redirect('https://google.com');
+            res.setHeader('Content-Type', 'text/plain');
+            return res.status(404).send('Error: Script not found or disabled.');
         }
 
         if (!script.secretKey) {
             // Script is corrupted (missing key)
-            return res.status(500).send('Script Error: Missing Secret Key');
+            res.setHeader('Content-Type', 'text/plain');
+            return res.status(500).send('Error: Script configuration missing (Secret Key). Please recreate the script.');
         }
 
         // 2. Validate Headers (Anti-Browser / Anti-Leech)
@@ -23,8 +25,10 @@ router.get('/:uuid', async (req, res) => {
         
         // Strict Check: Key must match script's secret key
         if (ggKey !== script.secretKey) {
-            // Log attempt?
-            return res.redirect('https://google.com'); // Redirect browser to innocent site
+            // Instead of redirecting (which confused the user), we return a text/plain error
+            // This mimics a "Raw View" but protects the content.
+            res.setHeader('Content-Type', 'text/plain');
+            return res.status(403).send('-- Access Denied --\n\nThis script is protected.\nYou must use the provided GameGuardian Loader to execute it.\n\nDirect browser access is not allowed.');
         }
 
         // Optional: Check User-Agent (GG usually sets one, but can be spoofed)
@@ -54,6 +58,7 @@ router.get('/:uuid', async (req, res) => {
 
     } catch (error) {
         console.error('[Raw Endpoint Error]', error);
+        res.setHeader('Content-Type', 'text/plain');
         res.status(500).send('Internal Server Error: ' + error.message);
     }
 });

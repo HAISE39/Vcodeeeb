@@ -65,14 +65,15 @@ async function runTest() {
     // 5. Test Raw Endpoint - NO HEADERS (Browser behavior)
     try {
         await axios.get(`${baseURL}/raw/${script.uuid}`, {
-            maxRedirects: 0
+            maxRedirects: 0,
+            validateStatus: status => status === 403
         });
-        console.error('5. Browser Access: FAILED (Should have redirected)');
+        console.log('5. Browser Access: OK (Got 403 Forbidden Text Page)');
     } catch (e) {
         if (e.response && (e.response.status === 302 || e.response.status === 301)) {
-            console.log('5. Browser Access: OK (Redirected)');
+            console.error('5. Browser Access: FAILED (Got Redirect, expected 403 Text)');
         } else {
-            console.error('5. Browser Access: Unexpected', e.message);
+            console.error('5. Browser Access: Unexpected Status', e.response ? e.response.status : e.message);
         }
     }
 
