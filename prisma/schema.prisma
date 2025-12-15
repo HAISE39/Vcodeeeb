@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  scripts   Script[]
+}
+
+model Script {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  content     String       @db.Text
+  encrypted   String       @db.Text
+  status      ScriptStatus @default(ACTIVE)
+  userId      String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  versions    ScriptVersion[]
+  
+  @@index([userId])
+  @@index([status])
+}
+
+model ScriptVersion {
+  id        String   @id @default(cuid())
+  scriptId  String
+  content   String   @db.Text
+  encrypted String   @db.Text
+  version   Int
+  createdAt DateTime @default(now())
+  
+  script    Script   @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+  
+  @@index([scriptId])
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum ScriptStatus {
+  ACTIVE
+  DISABLED
+}
