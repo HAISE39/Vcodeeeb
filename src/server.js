@@ -27,12 +27,17 @@ app.use('/auth', authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/raw', rawRoutes);
 
-// Sync DB and Start Server
-sequelize.sync({ force: false }).then(() => {
-  console.log('Database synced');
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-}).catch(err => {
-  console.error('Failed to sync db', err);
-});
+// Export app for Vercel
+module.exports = app;
+
+// Start Server if run directly
+if (require.main === module) {
+    sequelize.sync({ force: false }).then(() => {
+        console.log('Database synced');
+        app.listen(PORT, () => {
+            console.log(`Server running on http://localhost:${PORT}`);
+        });
+    }).catch(err => {
+        console.error('Failed to sync db', err);
+    });
+}

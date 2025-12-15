@@ -145,3 +145,19 @@ end
 3. Buka Dashboard: `http://localhost:3000`
 4. Register akun pertama (akan otomatis menjadi Admin).
 
+## ☁️ Deployment ke Vercel
+
+Project ini sudah dikonfigurasi untuk siap deploy ke Vercel.
+
+### Persyaratan
+Karena Vercel menggunakan arsitektur serverless (read-only filesystem), Anda **WAJIB** menggunakan database eksternal (PostgreSQL) dan tidak bisa menggunakan SQLite bawaan.
+
+1. Buat project baru di Vercel.
+2. Siapkan database PostgreSQL (bisa pakai **Vercel Postgres**, **Neon**, atau **Supabase**).
+3. Di Settings > Environment Variables project Vercel Anda, tambahkan:
+   - `DATABASE_URL`: Connection string PostgreSQL Anda (contoh: `postgres://user:pass@host:5432/dbname`)
+   - `JWT_SECRET`: String acak untuk keamanan session.
+4. Deploy project.
+
+Jika variable `DATABASE_URL` terdeteksi, aplikasi akan otomatis beralih dari SQLite ke PostgreSQL.
+
